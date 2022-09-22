@@ -17,14 +17,19 @@ class _MyHomePageState extends State<MyHomePage> {
   static var randomNumber = Random();
   int food = randomNumber.nextInt(numberOfSquares);
   int speed = 300;
-  Color backroundColor = Colors.black;
   var direction = 'down';
   bool begin = true;
   bool _enabled = true;
+  bool _ispause = false;
   int scorce = (snakePosition.length - 5);
   Timer? timer;
+  Color backroundColor = Color(0xff1b263b);
+  Color snakeColor = Colors.white;
+  Color snakeHeadColor = Colors.teal;
+  Color foodColor = Colors.green;
 //========== Function of Game =============================
   void generateNewFood() {
+    print(speed);
     do {
       food = randomNumber.nextInt(numberOfSquares);
     } while (snakePosition.contains(food));
@@ -32,16 +37,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void increaseDifficulty() {
     if (scorce % 2 == 0) {
-      (speed > 20) ? (speed -= 20) : (speed = 20);
+      (speed > 20) ? (speed -= 10) : (speed = 10);
     }
   }
 
   void startGame() {
-    if (!begin) return;
+    if (!begin && !_ispause) return;
     snakePosition = [45, 65, 85, 105, 125];
     speed = 300;
-    var direction = 'down';
+    direction = 'down';
     _enabled = true;
+    _ispause = false;
     final duration = Duration(milliseconds: speed);
     timer = Timer.periodic(duration, (Timer timer) {
       updateSnake();
@@ -55,28 +61,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void stopTime() {
-    setState(() {
-      timer!.cancel();
-    });
-  }
-
-  void continueRuning() {
-    final duration = Duration(milliseconds: speed);
-    timer = Timer.periodic(duration, (Timer timer) {
-      updateSnake();
-      if (gameOver()) {
-        timer.cancel();
-        _showGameOverScreen();
-        _enabled = false;
-        begin = true;
-      }
-    });
+    if (timer != null) {
+      setState(() {
+        timer!.cancel();
+        timer = null;
+        _ispause = true;
+      });
+    } else {
+      _ispause = false;
+      final duration = Duration(milliseconds: speed);
+      timer = Timer.periodic(duration, (Timer timer) {
+        updateSnake();
+        if (gameOver()) {
+          timer.cancel();
+          _showGameOverScreen();
+          _enabled = false;
+          begin = true;
+        }
+      });
+    }
   }
 
   void updateSnake() {
     if (begin) {
       direction = 'down';
       begin = false;
+      _ispause = false;
     }
     setState(
       () {
@@ -85,7 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
             if (snakePosition.last >= (numberOfSquares - 20)) {
               int x = snakePosition.last % (numberOfSquares - 20);
               snakePosition.add(x);
-              print('${snakePosition}');
             } else {
               snakePosition.add(snakePosition.last + 20);
             }
@@ -147,8 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('GAME OVER'),
-          content: Text('Your score: ' + scorce.toString()),
+          title: const Text('GAME OVER'),
+          content: Text('Your score: $scorce'),
           actions: [
             TextButton(
                 onPressed: () {
@@ -176,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: GestureDetector(
               //====== xu ly dieu khien ================
-              onVerticalDragUpdate: _enabled
+              onVerticalDragUpdate: _enabled && !_ispause
                   ? (details) {
                       if (direction != 'up' && details.delta.dy > 0) {
                         direction = 'down';
@@ -185,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                     }
                   : null,
-              onHorizontalDragUpdate: _enabled
+              onHorizontalDragUpdate: _enabled && !_ispause
                   ? (details) {
                       if (direction != 'left' && details.delta.dx > 0) {
                         direction = 'right';
@@ -199,43 +208,53 @@ class _MyHomePageState extends State<MyHomePage> {
                 numberOfSquares: numberOfSquares,
                 food: food,
                 snakePosition: snakePosition,
+                snakeColor: snakeColor,
+                snakeHeadColor: snakeHeadColor,
+                foodColor: foodColor,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 5, left: 20, right: 20),
+            padding: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      'Score:  ${snakePosition.length - 5}',
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Score:  ${snakePosition.length - 5}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: TextButton(
+                    onPressed: (begin) ? null : stopTime,
+                    child: Text(
+                      (begin) ? '' : ((timer != null) ? 'Pause' : 'Continue'),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                       ),
                     ),
-                  ],
-                ),
-                /* TextButton(
-                  onPressed: null,
-                  //(begin) ? null : ((isRuning) ? stopTime : continueRuning),
-                  child: Text(
-                    (i.isActive) ? 'Pause' : 'Continue',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
                   ),
-                ), */
-                TextButton(
-                  onPressed: startGame,
-                  child: const Text(
-                    'Start game',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
+                ),
+                Expanded(
+                  child: TextButton(
+                    onPressed: startGame,
+                    child: const Text(
+                      'Start game',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),

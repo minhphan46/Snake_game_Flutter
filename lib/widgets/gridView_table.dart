@@ -5,13 +5,15 @@ class GridViewTable extends StatelessWidget {
   final List<int> snakePosition;
   final int food;
   final Color snakeColor;
+  final Color snakeHeadColor;
   final Color foodColor;
   final Color backroundColor;
-  GridViewTable({
+  const GridViewTable({
     required this.numberOfSquares,
     required this.snakePosition,
     required this.food,
     this.snakeColor = Colors.white,
+    this.snakeHeadColor = Colors.teal,
     this.foodColor = Colors.green,
     this.backroundColor = Colors.white10,
   });
@@ -19,7 +21,7 @@ class GridViewTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: numberOfSquares,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 20,
@@ -32,7 +34,9 @@ class GridViewTable extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 child: Container(
                   color: (snakePosition.contains(index))
-                      ? snakeColor
+                      ? ((snakePosition.last == index)
+                          ? snakeHeadColor
+                          : snakeColor)
                       : ((index == food) ? foodColor : backroundColor),
                   /* child: Text(
                     '${index}',
