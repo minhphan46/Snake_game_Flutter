@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:snake_game/widgets/gridView_table.dart';
 
+import 'gameOver_screen.dart';
+
 class MyHomePage extends StatefulWidget {
   MyHomePage();
 
@@ -21,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool begin = true;
   bool _enabled = true;
   bool _ispause = false;
-  int scorce = (snakePosition.length - 5);
+  int score = (snakePosition.length - 5);
   Timer? timer;
   Color backroundColor = Color(0xff1b263b);
   Color snakeColor = Colors.white;
@@ -36,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void increaseDifficulty() {
-    if (scorce % 2 == 0) {
+    if (score % 2 == 0) {
       (speed > 20) ? (speed -= 10) : (speed = 10);
     }
   }
@@ -53,9 +55,13 @@ class _MyHomePageState extends State<MyHomePage> {
       updateSnake();
       if (gameOver()) {
         timer.cancel();
-        _showGameOverScreen();
         _enabled = false;
         begin = true;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GameOverScreen(score, startGame)),
+        );
       }
     });
   }
@@ -74,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
         updateSnake();
         if (gameOver()) {
           timer.cancel();
-          _showGameOverScreen();
           _enabled = false;
           begin = true;
         }
@@ -126,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         if (snakePosition.last == food) {
           generateNewFood();
-          scorce++;
+          score++;
           increaseDifficulty();
         } else {
           snakePosition.removeAt(0);
@@ -157,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context) {
         return AlertDialog(
           title: const Text('GAME OVER'),
-          content: Text('Your score: $scorce'),
+          content: Text('Your score: $score'),
           actions: [
             TextButton(
                 onPressed: () {
@@ -180,6 +185,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backroundColor,
+      appBar: AppBar(
+        title: const Text("Snake game"),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.navigate_next),
+          )
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
