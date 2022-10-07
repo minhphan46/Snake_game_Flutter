@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:snake_game/widgets/gridView_table.dart';
+import 'package:snake_game/widgets/homeAppbar.dart';
 
 import 'gameOver_screen.dart';
 
@@ -185,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backroundColor,
-      appBar: AppBar(
+      /* appBar: AppBar(
         title: const Text("Snake game"),
         actions: [
           IconButton(
@@ -193,89 +194,94 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.navigate_next),
           )
         ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              //====== xu ly dieu khien ================
-              onVerticalDragUpdate: _enabled && !_ispause
-                  ? (details) {
-                      if (direction != 'up' && details.delta.dy > 0) {
-                        direction = 'down';
-                      } else if (direction != 'down' && details.delta.dy < 0) {
-                        direction = 'up';
+      ), */
+      body: SafeArea(
+        child: Column(
+          children: [
+            HomeAppbar(),
+            Expanded(
+              child: GestureDetector(
+                //====== xu ly dieu khien ================
+                onVerticalDragUpdate: _enabled && !_ispause
+                    ? (details) {
+                        if (direction != 'up' && details.delta.dy > 0) {
+                          direction = 'down';
+                        } else if (direction != 'down' &&
+                            details.delta.dy < 0) {
+                          direction = 'up';
+                        }
                       }
-                    }
-                  : null,
-              onHorizontalDragUpdate: _enabled && !_ispause
-                  ? (details) {
-                      if (direction != 'left' && details.delta.dx > 0) {
-                        direction = 'right';
-                      } else if (direction != 'right' && details.delta.dx < 0) {
-                        direction = 'left';
+                    : null,
+                onHorizontalDragUpdate: _enabled && !_ispause
+                    ? (details) {
+                        if (direction != 'left' && details.delta.dx > 0) {
+                          direction = 'right';
+                        } else if (direction != 'right' &&
+                            details.delta.dx < 0) {
+                          direction = 'left';
+                        }
                       }
-                    }
-                  : null,
-              //========================================
-              child: GridViewTable(
-                numberOfSquares: numberOfSquares,
-                food: food,
-                snakePosition: snakePosition,
-                snakeColor: snakeColor,
-                snakeHeadColor: snakeHeadColor,
-                foodColor: foodColor,
+                    : null,
+                //========================================
+                child: GridViewTable(
+                  numberOfSquares: numberOfSquares,
+                  food: food,
+                  snakePosition: snakePosition,
+                  snakeColor: snakeColor,
+                  snakeHeadColor: snakeHeadColor,
+                  foodColor: foodColor,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Score:  ${snakePosition.length - 5}',
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Score:  ${snakePosition.length - 5}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: (begin) ? null : stopTime,
+                      child: Text(
+                        (begin) ? '' : ((timer != null) ? 'Pause' : 'Continue'),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: (begin) ? null : stopTime,
-                    child: Text(
-                      (begin) ? '' : ((timer != null) ? 'Pause' : 'Continue'),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                  Expanded(
+                    child: TextButton(
+                      onPressed: startGame,
+                      child: const Text(
+                        'Start game',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: startGame,
-                    child: const Text(
-                      'Start game',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
