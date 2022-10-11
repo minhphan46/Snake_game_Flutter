@@ -7,14 +7,27 @@ class HomeAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 60,
+      height: 70,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: Icon(Icons.home),
             color: Colors.white,
-          )
+          ),
+          const Text(
+            "Snake game",
+            style: TextStyle(
+                color: Colors.white, fontSize: 24, fontStyle: FontStyle.italic),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+            color: Colors.white,
+          ),
         ],
       ),
     );

@@ -1,7 +1,8 @@
 {
-    "vscode-pets.petColor": "gray",
-    "vscode-pets.petSize": "nano",
-    "vscode-pets.petType": "clippy",
-    "vscode-pets.position": "explorer",
-    "vscode-pets.theme": "forest"
+  "vscode-pets.petColor": "gray",
+  "vscode-pets.petSize": "nano",
+  "vscode-pets.petType": "clippy",
+  "vscode-pets.position": "explorer",
+  "vscode-pets.theme": "forest",
+  "cmake.sourceDirectory": "${workspaceFolder}/windows/flutter"
 }

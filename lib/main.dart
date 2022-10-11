@@ -6,6 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  Color backroundColor = Color(0xff3EB2E5);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: MyHomePage(),
+      home: HomeScreen(backroundColor),
     );
   }
 }
